@@ -1,0 +1,7 @@
+1.创建一个基于 webpack 模板的新项目（cmd下到某一个目录下）
+	vue init webpack 项目名称
+2.cd 切换到项目目录下
+3.cnpm install 安装项目所需的依赖包资源
+4.npm run dev 运行项目
+
+具体全部安装步骤https://segmentfault.com/a/1190000013950461

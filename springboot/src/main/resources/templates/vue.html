@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Vue 测试实例 - 菜鸟教程(runoob.com)</title>
+<script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+<script src="https://cdn.staticfile.org/axios/0.18.0/axios.min.js"></script>
+</head>
+<body>
+	<div id="box">
+		<table border="" cellspacing="" cellpadding="">
+			<tr>
+				<td>name</td>
+				<td>level</td>
+				<td>desc</td>
+				<td>id</td>
+			</tr>
+			<tr v-for="v in arr">
+				<td>{{v.name}}</td>
+				<td>{{v.level}}</td>
+				<td>{{v.desc}}</td>
+				<td>{{v.id}}</td>
+			</tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+		new Vue({
+			el : '#box',
+			data () {
+			    return {
+			    	arr: null
+			    }
+			  },
+			  mounted () {
+			    axios
+			      .post('/depart')//warn:参数传递不能成功
+			      .then(response => (this.arr = response.data))
+			      .catch(function (error) { // 请求失败处理
+			        console.log(error);
+			      });
+			  }
+		})
+	</script>
+</body>
+</html>

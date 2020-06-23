@@ -1,0 +1,16 @@
+#禁用缓存
+spring:
+  thymeleaf:
+    cache: false
+#server:
+#  port: 8088
+  #控制台打印生效的自动配置类
+debug: true   
+logging:
+  level:
+    com:
+      zun: debug
+  path: spring/log
+
+   
+
