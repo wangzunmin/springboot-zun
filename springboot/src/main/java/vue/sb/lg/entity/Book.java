@@ -1,19 +1,46 @@
 package vue.sb.lg.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="t_book")
 public class Book {
-	private String id;
+	@Id	//主键id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)//主键生成策略
+	@Column(name="id")//数据库字段名
+	private Integer id;
+	
+	@Column(name="cover")
 	private String cover;
+	
+	@Column(name="title")
 	private String title;
+	
+	@Column(name="author")
 	private String author;
+	
+	@Column(name="date")
 	private String date;
+	
+	@Column(name="press")
 	private String press;
+	
+	@Column(name="abs")
 	private String abs;
+	
+	@Column(name="cid")
+	private String cid;//类别
 	
 	
 	public Book() {
 		super();
 	}
-	public Book(String id, String cover, String title, String author, String date, String press, String abs) {
+	public Book(Integer id, String cover, String title, String author, String date, String press, String abs) {
 		super();
 		this.id = id;
 		this.cover = cover;
@@ -23,10 +50,10 @@ public class Book {
 		this.press = press;
 		this.abs = abs;
 	}
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getCover() {
@@ -64,6 +91,14 @@ public class Book {
 	}
 	public void setAbs(String abs) {
 		this.abs = abs;
+	}
+	
+	
+	public String getCid() {
+		return cid;
+	}
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 	@Override
 	public String toString() {

@@ -1,10 +1,12 @@
 package vue.sb.lg.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,26 +14,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import vue.sb.lg.dao.BookRepository;
 import vue.sb.lg.entity.Book;
 
+/**
+ * 部署前后端分离：
+ * 	wj-vue前端代码npm build命令生成dist文件夹，将文件夹下的文件复制至nginx下的html
+ * 目录下；修改配置文件nginx.conf,启动即可；
+ *  springboot后端代码打jar包，java -jar xxx.jar启动
+ *
+ * @author wangzunmin
+ *
+ */
 @Controller
 public class BookController {
 	
+	@Autowired
+	private BookRepository bookRepository;
 	
-	private List<Book> indexBooks() {
-		List<Book> books = new ArrayList<>();
-		books.add(new Book("1","https://i.loli.net/2019/04/10/5cada7e73d601.jpg"
-				,"三体","刘慈欣","2019-05-05","重庆出版社","文化大革命如火如荼进行的同时。军方探寻外星文明的绝秘计划“红岸工程”取得了突破性进展。但在按下发射键的那一刻，历经劫难的叶文洁没有意识到，她彻底改变了人类的命运。地球文明向宇宙发出的第一声啼鸣，以太阳为中心，以光速向宇宙深处飞驰……"));
-		books.add(new Book("2","https://i.loli.net/2020/06/11/cuyrZFe8DwMq5Cm.png"
-				,"你当像鸟飞往你的山","塔拉 · 韦斯特弗","2019-11","南海出版公司","17岁前从未上过学的女孩，如何成为剑桥大学博士？我们要背叛多少曾经，才能找到真正的自我！《纽约时报》 等数十家媒体一致公推“年度图书”，作者获选《时代周刊》年度影响力人物！这本书比你听说的还要好！"));
-		return books;
-	}
 	
 //	@CrossOrigin // 跨域支持  MyWebConfigurer.addCorsMappings全局生效
 	@RequestMapping("api/books")
 	@ResponseBody
 	public List<Book> books(){
-		return indexBooks();
+		List<Book> books = bookRepository.findAll();
+		return books;
 	}
 	
 	
@@ -41,12 +48,7 @@ public class BookController {
 	@RequestMapping("api/search")
 	@ResponseBody
 	public List<Book> search(@RequestParam("keywords")String input){
-		List<Book> books = new ArrayList<>();
-		if("三体".equals(input)) {
-			books.add(indexBooks().get(0));
-		}else {
-			books.addAll(indexBooks());
-		}
+		List<Book> books = bookRepository.findByTitle(input);
 		return books;
 	}
 	
@@ -55,21 +57,40 @@ public class BookController {
 	@RequestMapping("api/categories/{cid}/books")
 	@ResponseBody
 	public List<Book> categories(@PathVariable("cid")String cid){
-		List<Book> books = new ArrayList<>();
-		if("1".equals(cid)) {
-			books.add(indexBooks().get(0));
-		}else if("0".equals(cid)) {
-			books.addAll(indexBooks());
+		List<Book> all = null;
+		if("0".equals(cid)) {
+			all = bookRepository.findAll();
+		}else {
+			all = bookRepository.findByCid(cid);
 		}
-		return books;
+		return all;
 	}
 	
 	
 	@PostMapping("api/add")
 	@ResponseBody
 	public String add(@RequestBody Book book) {
-		
+		Book save = bookRepository.save(book);
+		System.out.println(save);
 		return "1";
+	}
+	
+	
+	@RequestMapping("api/delete/{id}/books")
+	@ResponseBody
+	public String categories(@PathVariable("id")Integer id){
+		bookRepository.delete(id);
+		return "1";
+	}
+	
+	@RequestMapping("api/pageBooks")
+	@ResponseBody
+	public Page<Book> pageBooks(@RequestParam("pageSize")Integer pageSize, 
+			@RequestParam("currentPage")Integer currentPage){
+		Pageable page = new PageRequest(currentPage-1, pageSize);
+		Page<Book> list = bookRepository.findAll(page);
+//		bookRepository.findAll(example, pageable); //分页带查询条件
+		return list;
 	}
 
 
