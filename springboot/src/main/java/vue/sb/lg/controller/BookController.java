@@ -3,6 +3,8 @@ package vue.sb.lg.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -83,13 +85,29 @@ public class BookController {
 		return "1";
 	}
 	
+	/**
+	 * 分页查询
+	 * @param pageSize
+	 * @param currentPage
+	 * @param book
+	 * @return
+	 */
 	@RequestMapping("api/pageBooks")
 	@ResponseBody
 	public Page<Book> pageBooks(@RequestParam("pageSize")Integer pageSize, 
-			@RequestParam("currentPage")Integer currentPage){
+			@RequestParam("currentPage")Integer currentPage, Book book){
+		Page<Book> list = null;
 		Pageable page = new PageRequest(currentPage-1, pageSize);
-		Page<Book> list = bookRepository.findAll(page);
-//		bookRepository.findAll(example, pageable); //分页带查询条件
+		if("".equals(book.getTitle())) {
+			book.setTitle(null);
+		}
+		ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+				.withMatcher("title", ExampleMatcher.GenericPropertyMatchers.contains());//模糊匹配
+		if("0".equals(book.getCid())) {
+			exampleMatcher = exampleMatcher.withIgnorePaths("cid");//忽略属性
+		}
+		Example<Book> example = Example.of(book, exampleMatcher);
+		list = bookRepository.findAll(example, page); //分页带查询条件
 		return list;
 	}
 
