@@ -7,8 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 @Entity
 @Table(name="t_book")
+@DynamicInsert
+@DynamicUpdate
 public class Book {
 	@Id	//主键id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)//主键生成策略
