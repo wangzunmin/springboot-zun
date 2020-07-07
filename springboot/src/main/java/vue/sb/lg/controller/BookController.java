@@ -92,10 +92,9 @@ public class BookController {
 	 * @param book
 	 * @return
 	 */
-	@RequestMapping("api/pageBooks")
+	@PostMapping("api/pageBooks")
 	@ResponseBody
-	public Page<Book> pageBooks(@RequestParam("pageSize")Integer pageSize, 
-			@RequestParam("currentPage")Integer currentPage, Book book){
+	public Page<Book> pageBooks(Integer pageSize, Integer currentPage, Book book){
 		Page<Book> list = null;
 		Pageable page = new PageRequest(currentPage-1, pageSize);
 		if("".equals(book.getTitle())) {
